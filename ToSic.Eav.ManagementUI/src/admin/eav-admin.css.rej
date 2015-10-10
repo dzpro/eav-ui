@@ -1,0 +1,11 @@
+diff a/ToSic.Eav.ManagementUI/src/admin/eav-admin.css b/ToSic.Eav.ManagementUI/src/admin/eav-admin.css	(rejected hunks)
+@@ -68,8 +68,3 @@
+ .mini-btn-4 {
+     width: 160px
+ }
+-
+-/* Global link styling */
+-a { cursor: pointer; }
+-
+-.clickable { cursor:pointer; }
+\ No newline at end of file

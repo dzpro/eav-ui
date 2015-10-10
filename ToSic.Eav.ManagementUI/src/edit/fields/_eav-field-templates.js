@@ -9,6 +9,7 @@ angular.module("eavFieldTemplates",
         "ui.bootstrap",
         "eavLocalization",
         "eavEditTemplates",
+    //    "eavEditTemplates", 
         "ui.tree"
     ]
 );
