@@ -133,15 +133,15 @@
     <Content Include="src\admin\services\debugState.js" />
     <Content Include="src\edit\fields\datetime-default.js" />
     <Content Include="src\edit\fields\number-default.js" />
-    <Content Include="src\edit\fields\entity-default.js" />
+    <Content Include="src\edit\fields\entity\entity-default.js" />
     <Content Include="src\edit\fields\string-textarea.js" />
     <Content Include="src\edit\fields\string-dropdown.js" />
     <Content Include="src\edit\fields\string-default.js" />
     <Content Include="src\edit\fields\date-reconfigure-json.js" />
     <Content Include="src\edit\fields\boolean-default.js" />
     <Content Include="src\edit\fields\_eav-field-templates.js" />
-    <Content Include="src\edit\fields\eav-label.css" />
-    <Content Include="src\edit\fields\eav-label.html" />
+    <Content Include="src\edit\wrappers\eav-label.css" />
+    <Content Include="src\edit\wrappers\eav-label.html" />
     <Content Include="src\edit\ml-entities\entity-enhancer.js" />
     <Content Include="src\admin\services\svc-creator.js" />
     <Content Include="src\admin\services\toaster.js" />
@@ -154,13 +154,13 @@
     <Content Include="src\edit\localization\language-switcher.html" />
     <Content Include="src\edit\localization\multilevel-dropdown-menu.css" />
     <Content Include="src\edit\services\entitiesSvc.js" />
-    <Content Include="src\edit\wrappers\edit-entity-wrapper.html" />
-    <Content Include="src\edit\wrappers\edit-entity-wrapper.js" />
+    <Content Include="src\edit\form\main-form.html" />
+    <Content Include="src\edit\form\main-form.js" />
     <Content Include="src\edit\form\edit-single-entity.html" />
     <Content Include="src\edit\form\edit-single-entity-controller.js" />
     <Content Include="src\edit\fields\eav-fieldtemplates.js" />
-    <Content Include="src\edit\fields\templates\entity-default.css" />
-    <Content Include="src\edit\fields\templates\entity-default.html" />
+    <Content Include="src\edit\fields\entity\entity-default.css" />
+    <Content Include="src\edit\fields\entity\entity-default.html" />
     <Content Include="src\edit\localization\formly-localization-wrapper.html" />
     <Content Include="src\edit\localization\images\locked.png" />
     <Content Include="src\edit\localization\images\unlocked.png" />
@@ -231,6 +231,7 @@
     <Content Include="src\admin\services\init-parameters-from-url.js" />
     <Content Include="src\admin\services\permissions-services.js" />
     <Content Include="src\admin\services\pipeline-services.js" />
+    <Content Include="src\edit\wrappers\eav-label.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>

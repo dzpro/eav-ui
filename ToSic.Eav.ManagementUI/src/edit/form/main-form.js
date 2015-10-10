@@ -5,7 +5,7 @@
 	var app = angular.module("eavEditEntity");
 
 	// The controller for the main form directive
-	app.controller("EditEntityWrapperCtrl", function editEntityCtrl($q, $http, $scope, items, $modalInstance) {
+	app.controller("MainForm", function editEntityCtrl($q, $http, $scope, items, $modalInstance) {
 
 	    var vm = this;
 	    vm.itemList = items;
