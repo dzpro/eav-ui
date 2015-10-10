@@ -105,6 +105,18 @@ angular.module("eavFieldTemplates")
 
 })();
 /* 
+ * Field: Empty - Default: this is usually a title/group section
+ */
+
+angular.module("eavFieldTemplates")
+    .config(["formlyConfigProvider", function(formlyConfigProvider) {
+        formlyConfigProvider.setType({
+            name: "empty-default",
+            templateUrl: "fields/empty/empty-default.html",
+            wrapper: ["fieldGroup"]
+        });
+    }]);
+/* 
  * Field: Entity - Default
  * Also contains much business logic and the necessary controller
  * 
@@ -504,7 +516,7 @@ angular.module("eavFieldTemplates")
 			// Use subtype 'default' if none is specified - or type does not exist
 			if (!subType || !formlyConfig.getType(type + "-" + subType))
 				subType = "default";
-
+            
 			return (type + "-" + subType);
 		};
 	}]);
@@ -573,6 +585,11 @@ angular.module("eavFieldTemplates")
 })();
 angular.module('eavEditTemplates',[]).run(['$templateCache', function($templateCache) {
   'use strict';
+
+  $templateCache.put('fields/empty/empty-default.html',
+    "<span></span>"
+  );
+
 
   $templateCache.put('fields/entity/entity-default.html',
     "<div class=eav-entityselect><div ui-tree=options data-empty-placeholder-enabled=false><ol ui-tree-nodes ng-model=chosenEntities><li ng-repeat=\"item in chosenEntities\" ui-tree-node class=eav-entityselect-item><div ui-tree-handle><i icon=move class=\"pull-left eav-entityselect-sort\" ng-show=to.settings.Entity.AllowMultiValue></i> <span title=\"{{getEntityText(item) + ' (' + item + ')'}}\">{{getEntityText(item)}}</span> <a data-nodrag title=\"Remove this item\" ng-click=remove(this) class=eav-entityselect-item-remove><i icon=remove-circle></i></a></div></li></ol></div><select class=\"eav-entityselect-selector form-control\" ng-model=selectedEntity ng-change=addEntity() ng-show=\"to.settings.Entity.AllowMultiValue || chosenEntities.length < 1\"><option value=\"\">-- choose --</option><option value=new ng-if=createEntityAllowed()>-- new --</option><option ng-repeat=\"item in availableEntities\" ng-disabled=\"chosenEntities.indexOf(item.Value) != -1\" value={{item.Value}}>{{item.Text}}</option></select></div>"

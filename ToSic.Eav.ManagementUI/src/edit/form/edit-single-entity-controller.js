@@ -91,7 +91,7 @@
 			// Use subtype 'default' if none is specified - or type does not exist
 			if (!subType || !formlyConfig.getType(type + "-" + subType))
 				subType = "default";
-
+            
 			return (type + "-" + subType);
 		};
 	});
