@@ -60,11 +60,11 @@ namespace ToSic.Eav.Import
 
             switch (type)
             {
-                case "String":
-                case "Hyperlink":
+                case "String": // todo: replace with AttributeTypeEnum...
+                case "Hyperlink":// todo: replace with AttributeTypeEnum...
                     valueModel = new ValueImportModel<string>(importEntity) { Value = value };
                     break;
-                case "Number":
+                case "Number":// todo: replace with AttributeTypeEnum...
                     decimal typedDecimal;
                     var isDecimal = Decimal.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out typedDecimal);
                     decimal? typedDecimalNullable = null;
@@ -75,7 +75,7 @@ namespace ToSic.Eav.Import
                         Value = typedDecimalNullable
                     };
                     break;
-                case "Entity":
+                case "Entity": // todo: replace with AttributeTypeEnum...
                     var entityGuids = !String.IsNullOrEmpty(value) ? value.Split(',').Select(v =>
                     {
                         var guid = Guid.Parse(v);
@@ -83,14 +83,14 @@ namespace ToSic.Eav.Import
                     }).ToList() : new List<Guid?>(0);
                     valueModel = new ValueImportModel<List<Guid?>>(importEntity) { Value = entityGuids };
                     break;
-                case "DateTime":
+                case "DateTime": // todo: replace with AttributeTypeEnum...
                     DateTime typedDateTime;
                     valueModel = new ValueImportModel<DateTime?>(importEntity)
                     {
                         Value = DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.None, out typedDateTime) ? typedDateTime : new DateTime?()
                     };
                     break;
-                case "Boolean":
+                case "Boolean": // todo: replace with AttributeTypeEnum...
                     bool typedBoolean;
                     valueModel = new ValueImportModel<bool?>(importEntity)
                     {

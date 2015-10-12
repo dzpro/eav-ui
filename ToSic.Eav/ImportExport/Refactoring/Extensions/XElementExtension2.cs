@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using ToSic.Eav.ImportExport.Refactoring.Options;
@@ -7,39 +8,57 @@ namespace ToSic.Eav.ImportExport.Refactoring.Extensions
 {
     internal static class XElementExtension2
     {
-        public static void AppendEntityReferences(this XElement element, Eav.Entity entity, Attribute attribute)
+        public static void AppendEntityReferences(this XElement element, IEntity entity, string attributeName)
         {
-            var entityGuids = attribute.ToSIC_EAV_EntityRelationships.Where(rel => rel.ParentEntityID == entity.EntityID)
-                                                                     .Select(rel => rel.ChildEntity.EntityGUID);
-            var entityGuidsString = string.Join(",", entityGuids);
-            element.Append(attribute.StaticName, entityGuidsString);
+            // get guids of children since this is a relationship
+            var entityGuids = entity.Attributes[attributeName].Values.FirstOrDefault()?.SerializableObject as List<Guid>; // get list of guids
+            if (entityGuids != null && entityGuids.Any())
+            {
+                // serialize
+                var entityGuidsString = string.Join(",", entityGuids);
+                element.Append(attributeName, entityGuidsString);
+            }
+            //else
+            //{
+            //    element.Append(attribute.Name, null);
+            //}
+
+
+            //var entityGuids = attribute.ToSIC_EAV_EntityRelationships.Where(rel => rel.ParentEntityID == entity.EntityID)
+            //                                                         .Select(rel => rel.ChildEntity.EntityGUID);
+            //var entityGuidsString = string.Join(",", entityGuids);
+            //element.Append(attribute.StaticName, entityGuidsString);
         }
 
         /// <summary>
         /// Append an element to this. The element will have the value of the EavValue. File and page references 
         /// can optionally be resolved.
         /// </summary>
-        public static void AppendValue(this XElement element, XName name, EavValue value, ResourceReferenceExport resourceReferenceOption)
+        public static void AppendValue(this XElement element, XName name, IValue value, ResourceReferenceExport resourceReferenceOption)
         {
             if (value == null)
             {
                 element.Append(name, "[]");
+                return;
             }
-            else if (value.Value == null)
+
+            var ser = value.Serialized;
+            
+            if (ser == null)
             {
                 element.Append(name, "[]");
-            }            
+            }
+            else if (ser == string.Empty)
+            {
+                element.Append(name, "[\"\"]");
+            }
             else if (resourceReferenceOption.IsResolve())
             {
                 element.Append(name, value.ResolveValueReference());
             }
-            else if (value.Value == string.Empty)
-            {
-                element.Append(name, "[\"\"]");
-            }
             else
             {
-                element.Append(name, value.Value);
+                element.Append(name, ser);
             }
         }
 
@@ -47,10 +66,10 @@ namespace ToSic.Eav.ImportExport.Refactoring.Extensions
         /// Append an element to this. If the attribute is named xxx and the value is 4711 in the language specified, 
         /// the element appended will be <xxx>4711</xxx>. File and page references can be resolved optionally.
         /// </summary>
-        public static void AppendValueResolved(this XElement element, Eav.Entity entity, Attribute attribute, string language, string languageFallback, ResourceReferenceExport resourceReferenceOption)
+        public static void AppendValueResolved(this XElement element, IEntity entity, string attributeName, string language, string languageFallback, ResourceReferenceExport resourceReferenceOption)
         {
-            var valueName = attribute.StaticName;
-            var value = entity.GetAttributeValue(attribute, language, languageFallback);
+            var valueName = attributeName;
+            var value = entity.GetBestValue(valueName, new string[] {language, languageFallback}, resourceReferenceOption == ResourceReferenceExport.Resolve);//.GetAttributeValue(attribute, language, languageFallback);
             element.AppendValue(valueName, value, resourceReferenceOption);
         }
 
@@ -58,17 +77,20 @@ namespace ToSic.Eav.ImportExport.Refactoring.Extensions
         /// Append an element to this. The element will get the name of the attribute, and if possible the value will 
         /// be referenced to another language (for example [ref(en-US,ro)].
         /// </summary>
-        public static void AppendValueReferenced(this XElement element, Eav.Entity entity, Attribute attribute, string language, string languageFallback, IEnumerable<string> languageScope, bool referenceParentLanguagesOnly, ResourceReferenceExport resourceReferenceOption)
+        public static void AppendValueReferenced(this XElement element, IEntity entity, string attributeName, string language, string languageFallback, IEnumerable<string> languageScope, bool referenceParentLanguagesOnly, ResourceReferenceExport resourceReferenceOption)
         {
-            var valueName = attribute.StaticName;
-            var value = entity.GetAttributeValue(attribute, language);
+            var valueName = attributeName;//.StaticName;
+
+            // try to get it with the preferred language, or fallback (will do this automatically)
+            var value = entity.Attributes[attributeName].Values.First(v => v.Languages.First(l => l.Key == language) != null);// .GetBestValue(attributeName, new string[] {language}, false);
+            // var value = entity.GetAttributeValue(attribute, language);
             if (value == null)
             {
                 element.Append(valueName, "[]");
                 return;
             }
 
-            var valueLanguage = value.ValuesDimensions.Select(reference => reference.Dimension.ExternalKey)
+            var valueLanguage = value.Languages.Select(reference => reference.Dimension.ExternalKey)
                                          .FirstOrDefault(l => l == language); // value.GetLanguage(language);
             if (valueLanguage == null)
             {   // If no language is found, serialize the plain value
